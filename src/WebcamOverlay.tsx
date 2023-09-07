@@ -64,8 +64,9 @@ export const WebcamOverlay = () => {
   }
 
   return (
-    <div>
+    <div className="webcam-container">
       <video
+        className="webcam-img"
         ref={videoRef}
         autoPlay
         playsInline
