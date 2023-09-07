@@ -437,3 +437,13 @@ summary:focus {
   text-align: center;
   color: var(--red);
 }
+
+
+/* WEBCAM */
+.webcam-overlay {
+  z-index: 999999;
+  position: absolute;
+  background-color: #fafafa;
+  width: 20rem;
+  height: 20rem;
+}
