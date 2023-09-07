@@ -19,7 +19,8 @@ import pointJoinRadiusIcon from "./icons/point-joining radius.svg";
 import rotateDrawingIcon from "./icons/rotate-drawing.svg";
 import { EBB } from "./ebb";
 
-import p5 from 'p5';
+import { WebcamOverlay } from "./WebcamOverlay";
+
 
 const defaultVisualizationOptions = {
   penStrokeWidth: 0.5,
@@ -1179,53 +1180,12 @@ function Root() {
         />
         <PlanLoader isPlanning={isPlanning} isLoadingFile={isLoadingFile} />
         {showDragTarget ? <DragTarget /> : null}
-        
+
       </div>
       <WebcamOverlay />
     </div>
   </DispatchContext.Provider>;
 }
-
-function WebcamOverlay() {
-  return <div className="webcam-overlay">
-    <div>
-      Webcam
-      <P5Sketch />
-    </div>
-  </div>
-}
-
-const P5Sketch: React.FC = () => {
-  const sketchRef = useRef<HTMLDivElement | null>(null);
-  
-  useEffect(() => {
-    const sketch = (p: p5) => {
-      p.setup = () => {
-        p.createCanvas(400, 400);
-      };
-  
-      p.draw = () => {
-        p.background(220);
-        p.ellipse(p.width / 2, p.height / 2, 100, 100);
-      };
-    };
-  
-    // Create the p5.js instance when the component mounts
-    if (sketchRef.current) {
-      new p5(sketch, sketchRef.current);
-    }
-  
-    // Clean up the p5.js instance when the component unmounts
-    return () => {
-      if (sketchRef.current) {
-        sketchRef.current.innerHTML = ''; // Clear the sketch container
-      }
-    };
-  }, []);
-  
-  return <div ref={sketchRef}></div>;
-};
-  
 
 function DragTarget() {
   return <div className="drag-target">

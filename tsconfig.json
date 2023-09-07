@@ -19,5 +19,5 @@
     "src/cli.ts",
     "src/global.d.ts"
   ], 
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "node_modules/imagetracerjs/**/*"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "node_modules/imagetracerjs/**/*", "src/WebcamOverlay.js"]
 }

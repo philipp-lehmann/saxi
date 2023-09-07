@@ -1,7 +1,7 @@
 import cors from "cors";
-import "web-streams-polyfill/es2018"
+import "web-streams-polyfill/es2018";
 import express from "express";
-import http from "http";
+import https from "https";
 import path from "path";
 import { default as NodeSerialPort } from "serialport";
 import { WakeLock } from "wake-lock";
@@ -10,17 +10,24 @@ import { SerialPortSerialPort } from "./serialport-serialport";
 import { EBB } from "./ebb";
 import { Device, PenMotion, Motion, Plan } from "./planning";
 import { formatDuration } from "./util";
+import fs from "fs";
 
 export function startServer(port: number, device: string | null = null, enableCors = false, maxPayloadSize = "200mb") {
   const app = express();
 
   app.use("/", express.static(path.join(__dirname, "..", "ui")));
-  app.use(express.json({limit: maxPayloadSize}));
+  app.use(express.json({ limit: maxPayloadSize }));
   if (enableCors) {
     app.use(cors());
   }
 
-  const server = http.createServer(app);
+  const credentials = {
+    key: fs.readFileSync(path.join(__dirname, "config", "rdfnaxi.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "config", "rdfnaxicert.pem")),
+  };
+
+  const server = https.createServer(credentials, app); // Use HTTPS
+
   const wss = new WebSocket.Server({ server });
 
   let ebb: EBB | null;
@@ -229,7 +236,7 @@ export function startServer(port: number, device: string | null = null, enableCo
       connect();
       const {family, address, port} = server.address() as any;
       const addr = `${family === "IPv6" ? `[${address}]` : address}:${port}`;
-      console.log(`Server listening on http://${addr}`);
+      console.log(`Server listening on https://${addr}`);
       resolve(server);
     });
   });

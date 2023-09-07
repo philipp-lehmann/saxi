@@ -441,9 +441,13 @@ summary:focus {
 
 /* WEBCAM */
 .webcam-overlay {
-  z-index: 999999;
+  z-index: 999;
   position: absolute;
   background-color: #fafafa;
   width: 20rem;
   height: 20rem;
+}
+
+.camera {
+  z-index: 9999;
 }
