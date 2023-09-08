@@ -7,6 +7,7 @@
   --purple-dark: #604987;
   --red: #DE7272;
   --panel-width: 260px;
+  --sidebar-width: 480px;
 }
 
 body {
@@ -441,8 +442,8 @@ summary:focus {
 
 /* WEBCAM */
 .webcam-container {
-  flex: 0 0 var(--panel-width);
-  width: var(--panel-width);
+  flex: 0 0 var(--sidebar-width);
+  width: var(--sidebar-width);
   background-color: white;
   overflow-y: scroll;
 
