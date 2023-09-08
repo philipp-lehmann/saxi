@@ -2,7 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 import { useCamera } from "react-use-camera";
 import imagetracer from "imagetracerjs";
 
-export const WebcamOverlay = () => {
+interface WebcamOverlayProps {
+  onNewSVGReady: (svgData: string) => void;
+}
+
+export const WebcamOverlay = ({ onNewSVGReady }: WebcamOverlayProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -139,7 +143,7 @@ export const WebcamOverlay = () => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Apply a posterization effect to the canvas
-      const levels = 4; // Adjust the number of levels as needed
+      const levels = 2; // Adjust the number of levels as needed
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imageData.data;
 
@@ -182,20 +186,21 @@ export const WebcamOverlay = () => {
     if (!ctx) return;
 
     try {
-      const options = { ltres: 0.2, qtres: 1.01, pathomit: 10 }; //
+      const options = { ltres: 10.0, qtres: 0.5, pathomit: 10 }; //
       const tracedSVG = imagetracer.imagedataToSVG(imageData, null, options);
-      setSvgData(tracedSVG); // Set the SVG data to state
-      console.log(tracedSVG);
+      setSvgData(tracedSVG);
+      onNewSVGReady(tracedSVG);
     } catch (error) {
       console.error("Error converting to SVG:", error);
     }
+    
   };
 
 
   return (
     <div className="webcam-container">
       <video
-        className="webcam-img"
+        className="output"
         ref={videoRef}
         autoPlay
         playsInline
@@ -204,18 +209,18 @@ export const WebcamOverlay = () => {
 
       {/* Display the cropped image */}
       {capturedImage && (
-        <div>
+        <div className="output">
           <h2>Canvas</h2>
-          <canvas ref={canvasRef}></canvas>
+          <canvas className="output" ref={canvasRef}></canvas>
           {/* <img src={capturedImage} alt="Captured" /> */}
         </div>
       )}
 
       {/* Display the SVG */}
       {svgData && (
-        <div>
+        <div className="output">
           <h2>SVG Output</h2>
-          <div dangerouslySetInnerHTML={{ __html: svgData }} />
+          <div className="output" dangerouslySetInnerHTML={{ __html: svgData }} />
         </div>
       )}
     </div>

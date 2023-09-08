@@ -821,6 +821,7 @@ function PlotButtons(
           Replanning...
         </button>
         : <button
+          id="plot-button"
           className={`plot-button ${state.progress != null ? "plot-button--plotting" : ""}`}
           disabled={plan == null || state.progress != null}
           onClick={() => plot(plan)}>
@@ -1182,10 +1183,30 @@ function Root() {
         {showDragTarget ? <DragTarget /> : null}
 
       </div>
-      <WebcamOverlay />
+      <WebcamOverlay onNewSVGReady={(svgData) => handleNewSVGData(svgData, dispatch)} />
     </div>
   </DispatchContext.Provider>;
 }
+
+
+function handleNewSVGData(svgData: string, dispatch: any) {
+  try {
+    const paths = readSvg(svgData);
+    dispatch(setPaths(paths));
+
+    // Now you can trigger any additional behavior you need, such as starting the plotter
+    // Delay the click event on the element with id "plot-button" by 1000ms
+    setTimeout(() => {
+      const plotButton = document.getElementById("plot-button");
+      if (plotButton) {
+        plotButton.click();
+      }
+    }, 1000);
+  } catch (error) {
+    console.error("Error handling new SVG data:", error);
+  }
+}
+
 
 function DragTarget() {
   return <div className="drag-target">
