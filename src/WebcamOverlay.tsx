@@ -4,12 +4,12 @@ import imagetracer from "imagetracerjs";
 
 export const WebcamOverlay = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null); 
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const { startCamera, stopCamera, capture } = useCamera();
   const [stream, setStream] = useState<MediaStream>();
-  const [capturedImage, setCapturedImage] = useState<string | null>(null); 
-  const [svgData, setSvgData] = useState<string | null>(null); 
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [svgData, setSvgData] = useState<string | null>(null);
 
   useEffect(() => {
     const initializeCamera = async () => {
@@ -57,16 +57,18 @@ export const WebcamOverlay = () => {
 
       if (capturedImageData) {
         const capturedDataURL = capturedImageData.url;
-        console.log("URL: " + capturedDataURL);
+        const image = new Image();
 
-        // Set the captured image data URL to state
-        setCapturedImage(capturedDataURL);
+        // Use await to ensure the image is fully loaded
+        await new Promise((resolve, reject) => {
+          image.onload = resolve;
+          image.onerror = reject;
+          image.src = capturedDataURL;
 
-        // Call the function to crop the captured image
-        cropImage(capturedDataURL);
-
-        // After cropping, convert the canvas to SVG
-        convertCanvasToSVG();
+          // Crop and convert the image
+          setCapturedImage(capturedDataURL);
+          cropImage(capturedDataURL);
+        });
       }
     } catch (error) {
       console.error("Image capture failed:", error);
@@ -76,7 +78,6 @@ export const WebcamOverlay = () => {
 
   // Function to crop the image and center it on a square canvas
   const cropImage = (imageDataUrl: string) => {
-    console.log("attempt cropping");
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -88,7 +89,6 @@ export const WebcamOverlay = () => {
     canvas.height = 480;
 
     image.onload = () => {
-      console.log("on load");
       const x = (canvas.width - image.width) / 2;
       const y = (canvas.height - image.height) / 2;
 
@@ -97,8 +97,14 @@ export const WebcamOverlay = () => {
       ctx.drawImage(image, x, y);
 
       // Add a bright red square for debugging
-      ctx.fillStyle = "rgba(255, 0, 0, 0.5)"; // Red color with transparency
-      ctx.fillRect(0, 0, 100, 100); // Example: Draw a red square at (50, 50) with dimensions 100x100 pixels
+      ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+      ctx.fillRect(0, 0, 100, 100);
+
+      // Capture image data after drawing
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      // Convert the canvas to SVG with the captured image data
+      convertCanvasToSVG(imageData);
     };
 
     image.onerror = (error) => {
@@ -111,19 +117,23 @@ export const WebcamOverlay = () => {
   };
 
   // Function to convert the canvas content to SVG using imagetracerjs
-  const convertCanvasToSVG = () => {
+  const convertCanvasToSVG = (imageData) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const tracedSVG = imagetracer.imageToSVG(imageData, null, null); // Use imagetracerjs to convert
+    console.log("Captured Image Data:", imageData); // Log the captured image data
 
-    setSvgData(tracedSVG); // Set the SVG data to state
+    try {
+      const tracedSVG = imagetracer.imagedataToSVG(imageData);
+      setSvgData(tracedSVG); // Set the SVG data to state
+      console.log(tracedSVG);
+    } catch (error) {
+      console.error("Error converting to SVG:", error);
+    }
   };
-
 
 
   return (
@@ -139,7 +149,7 @@ export const WebcamOverlay = () => {
       {/* Display the cropped image */}
       {capturedImage && (
         <div>
-          <h2>Captured Image</h2>
+          <h2>Canvas</h2>
           <canvas ref={canvasRef}></canvas>
           {/* <img src={capturedImage} alt="Captured" /> */}
         </div>

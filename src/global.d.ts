@@ -10,7 +10,6 @@ declare module 'colormap';
 
 declare module 'flatten-svg/index' {
   export { flattenSVG } from "flatten-svg/svg-to-paths";
-
 }
 declare module 'flatten-svg/svg-to-paths' {
   interface Options {
@@ -24,11 +23,14 @@ declare module 'flatten-svg/svg-to-paths' {
   }
   export function flattenSVG(svg: SVGElement, options?: Partial<Options>): Line[];
   export {};
-
 }
 declare module 'flatten-svg' {
   import main = require('flatten-svg/index');
   export = main;
+}
+declare module 'imagetracerjs' {
+  const imagetracer: any;
+  export default imagetracer;
 }
 
 declare const IS_WEB: boolean

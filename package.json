@@ -71,6 +71,7 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "flatten-svg": "^0.2.1",
+    "html2canvas": "^1.4.1",
     "imagetracerjs": "^1.2.6",
     "optimize-paths": "^1.2.2",
     "react-use-camera": "^1.1.3",
