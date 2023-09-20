@@ -32,5 +32,12 @@ declare module 'imagetracerjs' {
   const imagetracer: any;
   export default imagetracer;
 }
-
+declare module 'canny-edge-detector' {
+  const cannyEdgeDetector: any;
+  export default cannyEdgeDetector;
+}
+declare module 'image-js' {
+  const Image: any;
+  export default Image;
+}
 declare const IS_WEB: boolean

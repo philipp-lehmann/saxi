@@ -68,11 +68,14 @@
     "worker-loader": "^3.0.0"
   },
   "dependencies": {
+    "canny-edge-detector": "^1.0.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "flatten-svg": "^0.2.1",
     "html2canvas": "^1.4.1",
+    "image-js": "^0.35.4",
     "imagetracerjs": "^1.2.6",
+    "js-canny-edge-detector": "github:petarjs/js-canny-edge-detector",
     "optimize-paths": "^1.2.2",
     "react-use-camera": "^1.1.3",
     "serialport": "^9.2.0",

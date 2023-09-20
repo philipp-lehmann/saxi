@@ -1199,7 +1199,7 @@ function handleNewSVGData(svgData: string, dispatch: any) {
     setTimeout(() => {
       const plotButton = document.getElementById("plot-button");
       if (plotButton) {
-        plotButton.click();
+        // plotButton.click();
       }
     }, 1000);
   } catch (error) {

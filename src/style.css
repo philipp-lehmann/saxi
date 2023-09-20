@@ -450,6 +450,8 @@ summary:focus {
   box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.2);
 }
 
+
+.webcam-container img,
 .webcam-container .output, 
 .webcam-container .output svg {
   width: 100%;
